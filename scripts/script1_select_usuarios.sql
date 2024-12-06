@@ -1,3 +1,2 @@
-#eliminar registro
-select *from usuarios
-where usuarios.id=6
+select *from users
+where users.idUser = 6

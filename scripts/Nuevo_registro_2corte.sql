@@ -17,13 +17,14 @@ values("Nenfar","Chapid","2000-01-15","url.jpg",1,2,"2024-10-04 16:00:00"),
 ("Juan","Lopez","2002-05-22","url.jpg",2,2,"2024-10-04 16:01:00"),
 ("Andrea", "Suarez","2004-09-30","url.jpg",3,1,"2024-10-04 16:02:00"),
 ("Camilo", "Cortez","2006-05-22","url.jpg",4,2,"2024-10-04 16:03:00"),
-("Maria", "Torres","2007-05-02","url.jpg",5,1,"2024-10-04 16:04:00"),
+("Maria", "Lopez","2007-05-02","url.jpg",5,1,"2024-10-04 16:04:00"),
 ("Esteban", "Rodriguez","2002-10-22","url.jpg",6,2,"2024-10-04 16:05:00"),
-("Sofia", "Gomez","2010-08-22","url.jpg",7,1, now());
+("Sofia", "Gomez","2010-08-22","url.jpg",7,1, now()),
+("Sofia", "Perez","2010-08-22","url.jpg",7,1, now());
 
 insert into roles(`name`,createdAt)
-values("Estudiante","2024-10-04 17:00:00"),
-("Contribuidor","2024-10-04 17:00:00");
+values("student","2024-10-04 17:00:00"),
+("administrator","2024-10-04 17:00:00");
 
 insert into userRoles(idUser, idRol, createdAt)
 values(1,1,"2024-10-04 17:00:00"),

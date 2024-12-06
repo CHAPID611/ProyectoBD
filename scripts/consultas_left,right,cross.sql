@@ -5,106 +5,139 @@ select u.idUser, u.mail, p.`name`, p.lastName
 from users as u
 left join people as p on u.idUser = p.idUser;
 
+
 #2.Listar lecciones y el nivel correspondiente, incluso si no tienen un nivel asociado
 select l.*, lev.`name`
 from lessons as l
 left join levels as lev on lev.idLevel = l.idLevel;
 
+
 #3.Mostrar los usuarios y sus roles, incluso si no tienen un rol asignado:
+
 select u.mail, r.`name`
 from users as u
 left join userRoles as ur on u.idUser = ur.idUser
 left join roles as r on ur.idRol = r.idRol;
 
+
 #4.Obtener todas las lecciones y el idioma correspondiente, incluso si no están asociadas a un idioma:
+
 select l.title, lan.`name`
 from lessons as l
 left join languages as lan on l.idLanguage = lan.idLanguage;
+
  
 #5.Listar usuarios y sus contribuciones, incluso si no han realizado ninguna:
-select u.mail, c.`description` as contribution
-from users as u 
-left join contributions as c on u.idUser = c.idUser;
+
+
+SELECT u.mail, c.description AS contribution
+FROM users AS u
+LEFT JOIN content AS c ON u.idUser = c.idUser;
+
+
+
 
 #6.Mostrar las lecciones y sus contenidos, incluso si no tienen contenido asociado:
-select l.idLesson, l.title as lesson, c.`description` as contribution
-from lessons as l
-left join languages as lan on l.idLanguage = lan.idLanguage
-left join contributions as c on lan.idlanguage = c.idLanguage;
+
+SELECT l.idLesson, l.title AS lesson, c.description AS content
+FROM lessons AS l
+LEFT JOIN content AS c ON l.idLesson = c.idLesson;
+
 
 #7.Listar lecciones y el progreso del usuario, aunque no hayan iniciado ninguna lección:
-select l.idLesson, l.title as lesson, u.idUser, u.mail, p.initdate, p.endDate
-from users as u
-left join userLesson as ul on u.idUser = ul.idUser
-left join lessons as l on l.idLesson = ul.idLesson
-left join progress as p on p.idLesson =l.idLesson;
+
+SELECT l.idLesson, l.title AS lesson, u.idUser, u.mail, lp.initDate, lp.endDate
+FROM users AS u
+LEFT JOIN userLesson AS ul ON u.idUser = ul.idUser
+LEFT JOIN lessons AS l ON l.idLesson = ul.idLesson
+LEFT JOIN learningProgress AS lp ON lp.idLesson = ul.idUserLesson;
+
 
 #8.Obtener todos los archivos multimedia y el contenido asociado, incluso si no se han usado en contenido:
-select m.idMediaFile, m.media, c.idContent,c.`description`
-from mediaFiles as m
-left join content as c on m.idMediaFile = c.idMediaFile;
+
+SELECT m.idMediaFile, m.media, c.idContent, c.description
+FROM mediaFiles AS m
+LEFT JOIN content AS c ON m.idMediaFile = c.idMediaFile;
+
 
 #9.Mostrar todos los roles y los usuarios que los tienen asignados, aunque no todos los roles estén asignados:
-select u.idUser, u.mail, r.`name`
-from roles as r
-left join userRoles as ur on  ur.idRol = r.idRol
-left join users as u on u.idUser = ur.idUser;
+
+SELECT u.idUser, u.mail, r.name
+FROM roles AS r
+LEFT JOIN userRoles AS ur ON ur.idRol = r.idRol
+LEFT JOIN users AS u ON u.idUser = ur.idUser;
+
 
 #10.Listar todas las lecciones y el estado de progreso del usuario, aunque no haya progreso registrado:
-select u.idUser, u.mail, l.idLesson, l.title, s.`name` 
-from users as u
-left join userLesson  as ul on ul.idUser = u.idUser
-left join lessons as l on ul.idLesson = l.idLesson
-left join progress as p on p.idLesson = l.idLesson
-left join state as s on p.idState = s.idState;
+
+SELECT u.idUser, u.mail, l.idLesson, l.title, s.name
+FROM users AS u
+LEFT JOIN userLesson AS ul ON ul.idUser = u.idUser
+LEFT JOIN lessons AS l ON ul.idLesson = l.idLesson
+LEFT JOIN learningProgress AS lp ON lp.idLesson = ul.idUserLesson
+LEFT JOIN state AS s ON lp.idState = s.idState;
+
 
 #Consultas con RIGHT JOIN
 #1.Obtener los datos personales de las personas y su correo, aunque no tengan un usuario asignado:
-select p.*, u.mail
-from people as p
-right join users as u on u.idUser = p.idUser;
+
+SELECT p.name, p.lastName, u.mail
+FROM people AS p
+RIGHT JOIN users AS u ON p.idUser = u.idUser;
+
 
 #2.Mostrar las lecciones y los idiomas, aunque no estén asignados a ninguna lección:
-select lan.*, l.title as lesson
-from lessons as l
-right join languages as lan on lan.idLanguage = l.idLanguage;
+
+SELECT r.name AS role, u.mail
+FROM roles AS r
+RIGHT JOIN userRoles AS ur ON r.idRol = ur.idRol
+RIGHT JOIN users AS u ON ur.idUser = u.idUser;
+
 
 #3.Listar usuarios y sus roles, aunque no estén asignados a un usuario:
-select u.mail, r.`name`
-from roles as r
-right join userRoles as ur on r.idRol = ur.idRol
-right join users as u on u.idUser = ur.idUser;
+
+SELECT lan.name AS language, l.title AS lesson
+FROM languages AS lan
+RIGHT JOIN lessons AS l ON l.idLanguage = lan.idLanguage;
+
 
 #4.Obtener todos los niveles y las lecciones asociadas, incluso si no tienen lecciones asignadas:
-select lev.`name`, l.title
-from lessons as l
-right join levels as lev on lev.idLevel = l.idLevel;
+
+SELECT m.idMediaFile, m.media, c.idContent, c.description
+FROM content AS c
+RIGHT JOIN mediaFiles AS m ON m.idMediaFile = c.idMediaFile;
+
 
 #5.Mostrar los estados de progreso y las lecciones, incluso si no hay lecciones en esos estados:
-select l.idLesson, l.title as lesson, s.`name` as state
-from lessons as l
-right join progress as p on p.idLesson = l.idLesson
-right join state as s on s.idState = p.idState;
+
+SELECT l.idLesson, l.title AS lesson, lev.name AS level
+FROM levels AS lev
+RIGHT JOIN lessons AS l ON lev.idLevel = l.idLevel;
+
 
 #6.Listar todos los usuarios y las lecciones que están tomando, incluso si no están tomando ninguna:
-select u.idUser, u.mail, l.title as lesson
-from lessons as l
-right join userLesson as ul on ul.idLesson = l.idLesson
-right join users as u on u.idUser = ul.idUser;
+
+SELECT u.mail, l.title AS lesson, p.initDate, p.endDate
+FROM learningProgress AS p
+RIGHT JOIN userLesson AS ul ON p.idUser = ul.idUserLesson
+RIGHT JOIN users AS u ON ul.idUser = u.idUser
+RIGHT JOIN lessons AS l ON ul.idLesson = l.idLesson;
+
 
 #CORREGIR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #7.Obtener todas las lecciones y el progreso de los usuarios, incluso si no han iniciado ninguna lección:
-select l.title, u.mail, p.initDate, p.endDate
-from progress as p
-right join userProgress as up on up.idProgress = p.idProgress
-right join users as u on u.idUser = up.idUser
-right join userLesson as ul on ul.idUser = u.idUser
-right join lessons as l on ul.idLesson = l.idLesson;
+SELECT c.idContent, c.description, m.idMediaFile, m.media
+FROM mediaFiles AS m
+RIGHT JOIN content AS c ON c.idMediaFile = m.idMediaFile;
+
 
 #8.Mostrar todas las contribuciones y los usuarios, incluso si no han realizado ninguna contribución:
-select c.`description`, u.mail
-from contributions as c 
-right join users as u on c.idUser = u.idUser;
+SELECT s.name AS state, l.idLesson, l.title AS lesson
+FROM state AS s
+RIGHT JOIN learningProgress AS lp ON s.idState = lp.idState
+RIGHT JOIN userLesson AS ul ON lp.idUser = ul.idUserLesson
+RIGHT JOIN lessons AS l ON ul.idLesson = l.idLesson;
+
 
 #9.Listar todos los contenidos y las lecciones, incluso si no están asociados a ninguna lección:
 select c.`description`, l.title
@@ -119,9 +152,13 @@ right join mediaFiles as m on m.idMediaFile = c.idMediaFile;
 
 #Consultas con CORSS JOIN
 #1.Obtener todas las combinaciones posibles de usuarios y lecciones:
-select u.idUser, u.mail, l.idLesson, l.title
-from users as u
-cross join lessons as l ;
+
+
+select lan.`name` as language, l.title as lesson
+from languages as lan
+cross join lessons as l;
+
+
 
 #2.Listar todas las combinaciones posibles de usuarios y roles:
 select u.idUser, u.mail, r.`name`
@@ -129,16 +166,21 @@ from users as u
 cross join roles as r;
 
 #3.Obtener todas las combinaciones de usuarios y archivos multimedia:
-select u.idUser, u.mail, m.media
+
+select u.mail, l.title as lesson
 from users as u
-cross join mediaFiles as m;
+cross join lessons as l;
+
 
 #4.Mostrar todas las combinaciones de lecciones y niveles:
-select l.idLesson, l.title, lev.`name`
-from lessons as l
-cross join levels as lev;
+
+select m.media, c.`description` as content
+from mediaFiles as m
+cross join content as c;
+
 
 #5.Listar todas las combinaciones posibles de lecciones y estados de progreso:
-select l.idLesson, l.title, s.`name`
-from lessons as l
-cross join state as s;
+
+select p.`name`, r.`name` as role
+from people as p
+cross join roles as r;
